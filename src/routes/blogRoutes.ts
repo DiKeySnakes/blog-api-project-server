@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   getAllBlogs,
+  getDetailedBlog,
   createNewBlog,
   updateBlog,
   publishBlog,
@@ -17,6 +18,11 @@ router.get('/blogs_all', getAllBlogs);
 // @route POST /blog/create_blog
 // @access Private
 router.post('/create_blog', createNewBlog);
+
+// @desc Display detail page for a specific blog
+// @route GET /blog/:id
+// @access Public
+router.get('/:id', getDetailedBlog);
 
 // @desc Update a blog
 // @route PATCH /blog/update/:id

@@ -1,5 +1,5 @@
 import Blog from '../models/blog.js';
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { body, Result, validationResult } from 'express-validator';
 
 // @desc Get all published blogs
@@ -18,6 +18,25 @@ const getAllBlogs = async (req: Request, res: Response) => {
   }
 
   res.json(blogs);
+};
+
+// @desc Display detail page for a specific blog
+// @route GET /blog/:id
+// @access Public
+const getDetailedBlog = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // Get details of a blog.
+  const blog = await Blog.findById(req.params.id).populate('comments').exec();
+  if (blog === null) {
+    // No results.
+    const err = new Error('Blog not found');
+    return next(err);
+  }
+
+  res.json(blog);
 };
 
 // @desc Create new blog
@@ -148,4 +167,4 @@ const publishBlog = async (req: Request, res: Response) => {
   return res.json({ message: `Publish property of ${blog.title} updated` });
 };
 
-export { getAllBlogs, createNewBlog, updateBlog, publishBlog };
+export { getAllBlogs, getDetailedBlog, createNewBlog, updateBlog, publishBlog };

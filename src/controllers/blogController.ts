@@ -8,6 +8,7 @@ const getAllBlogs = async (req: Request, res: Response) => {
   // Get all published blogs from MongoDB excluding content fields and comments arrays
   const blogs = await Blog.find({ published: true })
     .select('-content -comments')
+    .sort({ createdAt: -1 })
     .exec();
 
   // If no published blogs

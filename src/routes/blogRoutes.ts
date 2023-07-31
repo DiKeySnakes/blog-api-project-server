@@ -1,5 +1,10 @@
 import express from 'express';
-import { getAllBlogs } from '../controllers/blogController.js';
+import {
+  getAllBlogs,
+  createNewBlog,
+  updateBlog,
+  publishBlog,
+} from '../controllers/blogController.js';
 
 const router = express.Router();
 
@@ -7,5 +12,20 @@ const router = express.Router();
 // @route GET /blog/blogs_all
 // @access Public
 router.get('/blogs_all', getAllBlogs);
+
+// @desc Create new blog
+// @route POST /blog/create_blog
+// @access Private
+router.post('/create_blog', createNewBlog);
+
+// @desc Update a blog
+// @route PATCH /blog/update/:id
+// @access Private
+router.patch('/update/:id', updateBlog);
+
+// @desc Publish a blog
+// @route PATCH /blog/publish/:id
+// @access Private
+router.patch('/publish/:id', publishBlog);
 
 export default router;

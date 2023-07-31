@@ -3,6 +3,7 @@ import { Schema, model } from 'mongoose';
 // Create an interface representing a document in MongoDB.
 interface IComment {
   content: string;
+  blog: Schema.Types.ObjectId;
   user: Schema.Types.ObjectId;
 }
 
@@ -10,6 +11,7 @@ interface IComment {
 const userSchema = new Schema<IComment>(
   {
     content: { type: String, required: true },
+    blog: { type: Schema.Types.ObjectId, ref: 'Blog', required: true },
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   },
   {

@@ -1,4 +1,5 @@
 import Blog from '../models/blog.js';
+// import Comment from '../models/comment.js';
 import { Request, Response, NextFunction } from 'express';
 import { body, Result, validationResult } from 'express-validator';
 

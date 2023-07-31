@@ -1,16 +1,16 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Types, model } from 'mongoose';
 
 // Create an interface representing a document in MongoDB.
 interface IBlog {
   title: string;
   description: string;
   content: string;
-  comments: [Schema.Types.ObjectId];
+  comments: [Types.ObjectId];
   published: boolean;
 }
 
 // Create a Schema corresponding to the document interface.
-const userSchema = new Schema<IBlog>(
+const blogSchema = new Schema<IBlog>(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
@@ -27,6 +27,6 @@ const userSchema = new Schema<IBlog>(
 );
 
 // Create a Model.
-const Blog = model<IBlog>('Blog', userSchema);
+const Blog = model<IBlog>('Blog', blogSchema);
 
 export default Blog;

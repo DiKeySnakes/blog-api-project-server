@@ -15,6 +15,8 @@ import corsOptions from './config/corsOptions.js';
 
 import mongoose from 'mongoose';
 
+import blogRoutes from './routes/blogRoutes.js';
+
 const app: Express = express();
 
 // Set up rate limiter: maximum of twenty requests per minute
@@ -55,6 +57,14 @@ app.use(
 );
 
 app.use(compression()); // Compress all routes
+
+// routes
+app.get('/', (req: Request, res: Response) => {
+  res.redirect('/blog/blogs_all');
+});
+
+// category routes
+app.use('/blog', blogRoutes);
 
 // 404 page
 app.use((req: Request, res: Response) => {

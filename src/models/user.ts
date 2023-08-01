@@ -6,7 +6,6 @@ interface IUser {
   email: string;
   password: string;
   roles: [string];
-  active: boolean;
   banned: boolean;
 }
 
@@ -19,10 +18,6 @@ const userSchema = new Schema<IUser>(
     roles: {
       type: [String],
       default: ['User'],
-    },
-    active: {
-      type: Boolean,
-      default: true,
     },
     banned: {
       type: Boolean,

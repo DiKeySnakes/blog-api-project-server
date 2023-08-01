@@ -1,5 +1,4 @@
 import Blog from '../models/blog.js';
-// import Comment from '../models/comment.js';
 import { Request, Response, NextFunction } from 'express';
 import { body, Result, validationResult } from 'express-validator';
 
@@ -45,7 +44,7 @@ const getDetailedBlog = async (
 // @access Private
 const createNewBlog = [
   // Validate and sanitize title, description and content fields.
-  body('title', 'Category title must contain at least 3 characters')
+  body('title', 'Blog title must contain at least 3 characters')
     .trim()
     .isLength({ min: 3 })
     .custom(async (value) => {
@@ -55,11 +54,11 @@ const createNewBlog = [
       }
     })
     .escape(),
-  body('description', 'Category description must contain at least 5 characters')
+  body('description', 'Blog description must contain at least 5 characters')
     .trim()
     .isLength({ min: 5 })
     .escape(),
-  body('content', 'Category content must contain at least 5 characters')
+  body('content', 'Blog content must contain at least 5 characters')
     .trim()
     .isLength({ min: 5 })
     .escape(),
@@ -81,7 +80,7 @@ const createNewBlog = [
       res.json({ errors: errors.array() });
       return;
     } else {
-      // Data from form is valid.
+      // Data is valid.
       // Save new blog.
       await blog.save();
       // New blog saved.
@@ -95,15 +94,15 @@ const createNewBlog = [
 // @access Private
 const updateBlog = [
   // Validate and sanitize title, description and content fields.
-  body('title', 'Category title must contain at least 3 characters')
+  body('title', 'Blog title must contain at least 3 characters')
     .trim()
     .isLength({ min: 3 })
     .escape(),
-  body('description', 'Category description must contain at least 5 characters')
+  body('description', 'Blog description must contain at least 5 characters')
     .trim()
     .isLength({ min: 5 })
     .escape(),
-  body('content', 'Category content must contain at least 5 characters')
+  body('content', 'Blog content must contain at least 5 characters')
     .trim()
     .isLength({ min: 5 })
     .escape(),
@@ -135,7 +134,7 @@ const updateBlog = [
       res.json({ errors: errors.array() });
       return;
     } else {
-      // Data from form is valid.
+      // Data is valid.
       // Update blog.
       await Blog.findByIdAndUpdate(req.params.id, blog, {});
       return res.json({ message: `${blog.title} updated` });

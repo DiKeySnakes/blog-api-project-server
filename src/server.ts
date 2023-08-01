@@ -15,6 +15,7 @@ import corsOptions from './config/corsOptions.js';
 
 import mongoose from 'mongoose';
 
+import authRoutes from './routes/authRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';
 
 const app: Express = express();
@@ -63,7 +64,10 @@ app.get('/', (req: Request, res: Response) => {
   res.redirect('/blog/blogs_all');
 });
 
-// category routes
+// auth routes
+app.use('/auth', authRoutes);
+
+// blog routes
 app.use('/blog', blogRoutes);
 
 // 404 page

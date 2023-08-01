@@ -146,10 +146,7 @@ const refresh = (req: Request, res: Response) => {
   const cookies = req.cookies;
 
   interface IJWTPayload {
-    UserInfo: {
-      username: string;
-      roles: [string];
-    };
+    username: string;
   }
 
   if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' });
@@ -168,7 +165,7 @@ const refresh = (req: Request, res: Response) => {
       const payload = decoded as IJWTPayload;
 
       const foundUser = await User.findOne({
-        username: payload.UserInfo.username,
+        username: payload.username,
       }).exec();
 
       if (!foundUser) return res.status(401).json({ message: 'Unauthorized' });

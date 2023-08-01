@@ -1,5 +1,10 @@
 import express from 'express';
-import { sign_up, login } from '../controllers/authController.js';
+import {
+  sign_up,
+  login,
+  logout,
+  refresh,
+} from '../controllers/authController.js';
 
 const router = express.Router();
 
@@ -12,5 +17,15 @@ router.post('/sign_up', sign_up);
 // @route POST /auth/login
 // @access Public
 router.post('/login', login);
+
+// @desc Refresh
+// @route GET /auth/refresh
+// @access Public - because access token has expired
+router.get('/refresh', refresh);
+
+// @desc Logout
+// @route POST /auth/logout
+// @access Public - just to clear cookie if exists
+router.post('/logout', logout);
 
 export default router;

@@ -17,6 +17,7 @@ import mongoose from 'mongoose';
 
 import authRoutes from './routes/authRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';
+import commentRoutes from './routes/commentRoutes.js';
 
 const app: Express = express();
 
@@ -69,6 +70,9 @@ app.use('/auth', authRoutes);
 
 // blog routes
 app.use('/blog', blogRoutes);
+
+// comment routes
+app.use('/comment', commentRoutes);
 
 // 404 page
 app.use((req: Request, res: Response) => {

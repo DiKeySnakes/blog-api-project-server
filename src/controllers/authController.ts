@@ -1,5 +1,6 @@
 import User from '../models/user.js';
 import bcrypt from 'bcrypt';
+import jwt, { VerifyErrors, Jwt, JwtPayload } from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { body, Result, validationResult } from 'express-validator';
 
@@ -89,4 +90,113 @@ const sign_up = [
   },
 ];
 
-export { sign_up };
+// @desc Login
+// @route POST /auth/login
+// @access Public
+const login = async (req: Request, res: Response) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  const foundUser = await User.findOne({ username }).exec();
+
+  if (!foundUser) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  const match = await bcrypt.compare(password, foundUser.password);
+
+  if (!match) return res.status(401).json({ message: 'Unauthorized' });
+
+  const accessToken = jwt.sign(
+    {
+      UserInfo: {
+        username: foundUser.username,
+        roles: foundUser.roles,
+      },
+    },
+    process.env.ACCESS_TOKEN_SECRET!,
+    { expiresIn: '15m' }
+  );
+
+  const refreshToken = jwt.sign(
+    { username: foundUser.username },
+    process.env.REFRESH_TOKEN_SECRET!,
+    { expiresIn: '7d' }
+  );
+
+  // Create secure cookie with refresh token
+  res.cookie('jwt', refreshToken, {
+    httpOnly: true, //accessible only by web server
+    secure: true, //https
+    sameSite: 'none', //cross-site cookie
+    maxAge: 7 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
+  });
+
+  // Send accessToken containing username and roles
+  res.json({ accessToken });
+};
+
+// @desc Refresh
+// @route GET /auth/refresh
+// @access Public - because access token has expired
+const refresh = (req: Request, res: Response) => {
+  const cookies = req.cookies;
+
+  interface IJWTPayload {
+    UserInfo: {
+      username: string;
+      roles: [string];
+    };
+  }
+
+  if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' });
+
+  const refreshToken = cookies.jwt;
+
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET!,
+    async (
+      err: VerifyErrors | null,
+      decoded: string | Jwt | JwtPayload | undefined
+    ) => {
+      if (err) return res.status(403).json({ message: 'Forbidden' });
+
+      const payload = decoded as IJWTPayload;
+
+      const foundUser = await User.findOne({
+        username: payload.UserInfo.username,
+      }).exec();
+
+      if (!foundUser) return res.status(401).json({ message: 'Unauthorized' });
+
+      const accessToken = jwt.sign(
+        {
+          UserInfo: {
+            username: foundUser.username,
+            roles: foundUser.roles,
+          },
+        },
+        process.env.ACCESS_TOKEN_SECRET!,
+        { expiresIn: '15m' }
+      );
+
+      res.json({ accessToken });
+    }
+  );
+};
+
+// @desc Logout
+// @route POST /auth/logout
+// @access Public - just to clear cookie if exists
+const logout = (req: Request, res: Response) => {
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.sendStatus(204); //No content
+  res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
+  res.json({ message: 'Cookie cleared' });
+};
+
+export { sign_up, login, refresh, logout };

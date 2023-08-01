@@ -41,6 +41,22 @@ const sign_up = [
       minSymbols: 1,
     })
     .escape(),
+  body(
+    'confirmPassword',
+    'Password must contain at least 8 characters, at least 1 lowercase character, at least 1 uppercase character, at least 1 number and at least 1 symbol'
+  )
+    .trim()
+    .isStrongPassword({
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    })
+    .custom((value, { req }) => {
+      return value === req.body.password;
+    })
+    .escape(),
 
   // Process request after validation and sanitization.
   async (req: Request, res: Response) => {

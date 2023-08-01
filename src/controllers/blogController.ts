@@ -1,4 +1,5 @@
 import Blog from '../models/blog.js';
+import Comment from '../models/comment.js';
 import { Request, Response, NextFunction } from 'express';
 import { body, Result, validationResult } from 'express-validator';
 
@@ -29,14 +30,19 @@ const getDetailedBlog = async (
   next: NextFunction
 ) => {
   // Get details of a blog.
-  const blog = await Blog.findById(req.params.id).populate('comments').exec();
+
+  const [blog, comments] = await Promise.all([
+    Blog.findById(req.params.id).exec(),
+    Comment.find({ blog: req.params.id }).exec(),
+  ]);
+
   if (blog === null) {
     // No results.
     const err = new Error('Blog not found');
     return next(err);
   }
 
-  res.json(blog);
+  res.json({ blog: blog, comments: comments });
 };
 
 // @desc Create new blog

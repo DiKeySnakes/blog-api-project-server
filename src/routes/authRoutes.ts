@@ -6,6 +6,6 @@ const router = express.Router();
 // @desc Create new user (Sign up)
 // @route POST /auth/sign_up
 // @access Public
-router.get('/sign_up', sign_up);
+router.post('/sign_up', sign_up);
 
 export default router;

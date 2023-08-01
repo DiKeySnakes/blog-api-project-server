@@ -6,7 +6,7 @@ interface IUser {
   email: string;
   password: string;
   roles: [string];
-  banned: boolean;
+  active: boolean;
 }
 
 // Create a Schema corresponding to the document interface.
@@ -19,9 +19,9 @@ const userSchema = new Schema<IUser>(
       type: [String],
       default: ['User'],
     },
-    banned: {
+    active: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   {

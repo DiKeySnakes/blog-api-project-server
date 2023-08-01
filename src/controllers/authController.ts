@@ -102,7 +102,7 @@ const login = async (req: Request, res: Response) => {
 
   const foundUser = await User.findOne({ username }).exec();
 
-  if (!foundUser) {
+  if (!foundUser || !foundUser.active) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 

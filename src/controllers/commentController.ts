@@ -46,4 +46,24 @@ const createNewComment = [
   },
 ];
 
-export { createNewComment };
+// @desc Delete comment
+// @route DELETE /comment/delete/:id
+// @access Private Admin
+const deleteComment = async (req: Request, res: Response) => {
+  const commentToDelete = await Comment.findById(req.params.id);
+  if (!commentToDelete)
+    return res.status(400).json({ message: 'Comment not found' });
+
+  // Delete comment
+  await Comment.findByIdAndDelete(req.params.id);
+
+  // Comment deleted
+  // Pull deleted comment from blog's comments array.
+
+  await Blog.findByIdAndUpdate(commentToDelete.blog, {
+    $pull: { comments: req.params.id },
+  });
+  return res.json({ message: 'Comment was successfully deleted' });
+};
+
+export { createNewComment, deleteComment };

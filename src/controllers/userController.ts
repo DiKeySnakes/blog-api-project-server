@@ -41,4 +41,36 @@ const updateUserActive = async (req: Request, res: Response) => {
   return res.json({ message: `Active property of ${user.username} updated` });
 };
 
-export { getAllUsers, updateUserActive };
+// @desc Update a user roles array
+// @route PATCH /user/roles/:id
+// @access Private
+const updateUserRoles = async (req: Request, res: Response) => {
+  const roles = req.body.roles;
+
+  // Confirm data
+  if (!Array.isArray(roles) || !roles.length) {
+    return res.status(400).json({ message: 'Add roles! User, admin or both' });
+  }
+
+  // Confirm user exists to update
+  const userToUpdate = await User.findById(req.params.id).exec();
+
+  if (!userToUpdate) {
+    return res.status(400).json({ message: 'User not found' });
+  }
+
+  // Create a user object with new roles array (and the old id!)
+  const user = new User({
+    username: userToUpdate.username,
+    email: userToUpdate.email,
+    password: userToUpdate.password,
+    roles: roles,
+    active: userToUpdate.active,
+    _id: req.params.id,
+  });
+  // Update roles array.
+  await User.findByIdAndUpdate(req.params.id, user, {});
+  return res.json({ message: `Roles array of ${user.username} updated` });
+};
+
+export { getAllUsers, updateUserActive, updateUserRoles };

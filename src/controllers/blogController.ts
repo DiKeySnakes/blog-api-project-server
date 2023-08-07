@@ -33,7 +33,7 @@ const getDetailedBlog = async (
 
   const [blog, comments] = await Promise.all([
     Blog.findById(req.params.id).exec(),
-    Comment.find({ blog: req.params.id }).exec(),
+    Comment.find({ blog: req.params.id }).populate('user').exec(),
   ]);
 
   if (blog === null) {

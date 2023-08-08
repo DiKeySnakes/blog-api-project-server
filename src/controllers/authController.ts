@@ -42,10 +42,7 @@ const sign_up = [
       minSymbols: 1,
     })
     .escape(),
-  body(
-    'confirmPassword',
-    'Password must contain at least 8 characters, at least 1 lowercase character, at least 1 uppercase character, at least 1 number and at least 1 symbol'
-  )
+  body('confirmPassword', 'Passwords do not match!')
     .trim()
     .isStrongPassword({
       minLength: 8,
@@ -76,7 +73,7 @@ const sign_up = [
 
     if (!errors.isEmpty()) {
       // There are errors.
-      res.json({ errors: errors.array() });
+      res.status(400).json({ errors: errors.array() });
       return;
     } else {
       // Data is valid.
@@ -84,7 +81,7 @@ const sign_up = [
       await user.save();
       // New user saved.
       return res
-        .status(201)
+        .status(200)
         .json({ message: `New user ${user.username} created` });
     }
   },

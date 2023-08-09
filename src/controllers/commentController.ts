@@ -1,10 +1,11 @@
 import Blog from '../models/blog.js';
+import User from '../models/user.js';
 import Comment from '../models/comment.js';
 import { Request, Response } from 'express';
 import { body, Result, validationResult } from 'express-validator';
 
 // @desc Create new comment
-// @route POST /comment/create_comment
+// @route POST /comment/create/:id
 // @access Private
 const createNewComment = [
   // Validate and sanitize content field.
@@ -18,16 +19,26 @@ const createNewComment = [
     // Extract the validation errors from a request.
     const errors: Result = validationResult(req);
 
+    const username = req.body.user;
+
+    const blog = req.params.id;
+
+    const foundUser = await User.findOne({ username }).exec();
+
+    if (!foundUser || !foundUser.active) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
     // Create a blog object with escaped and trimmed data.
     const comment = new Comment({
       content: req.body.content,
-      blog: req.body.blog,
-      user: req.body.user,
+      blog: blog,
+      user: foundUser._id,
     });
 
     if (!errors.isEmpty()) {
       // There are errors.
-      res.json({ errors: errors.array() });
+      res.status(400).json({ errors: errors.array() });
       return;
     } else {
       // Data is valid.
@@ -36,11 +47,11 @@ const createNewComment = [
       // New comment saved.
       // Push comment into blog's comments array.
       await Blog.findOneAndUpdate(
-        { _id: req.body.blog },
+        { _id: blog },
         { $push: { comments: comment } }
       );
       return res
-        .status(201)
+        .status(200)
         .json({ message: 'Comment was added successfully' });
     }
   },

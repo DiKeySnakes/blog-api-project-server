@@ -9,9 +9,9 @@ import {
 const router = express.Router();
 
 // @desc Create new comment
-// @route POST /comment/create_comment
+// @route POST /comment/create/:id
 // @access Private
-router.post('/create', verifyJWT, createNewComment);
+router.post('/create/:id', verifyJWT, createNewComment);
 
 // @desc Delete comment
 // @route DELETE /comment/delete/:id

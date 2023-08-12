@@ -62,9 +62,9 @@ app.use(
 app.use(compression()); // Compress all routes
 
 // routes
-app.get('/', (req: Request, res: Response) => {
-  res.redirect('/blog/blogs_all');
-});
+// app.get('/', (req: Request, res: Response) => {
+//   res.redirect('/blog/blogs_all');
+// });
 
 // auth routes
 app.use('/auth', authRoutes);

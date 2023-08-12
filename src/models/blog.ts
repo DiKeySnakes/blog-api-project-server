@@ -2,6 +2,7 @@ import { Schema, Types, model } from 'mongoose';
 
 // Create an interface representing a document in MongoDB.
 interface IBlog {
+  image: string;
   title: string;
   description: string;
   content: string;
@@ -12,6 +13,7 @@ interface IBlog {
 // Create a Schema corresponding to the document interface.
 const blogSchema = new Schema<IBlog>(
   {
+    image: { type: String, required: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
     content: { type: String, required: true },

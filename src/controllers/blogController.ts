@@ -50,6 +50,10 @@ const getDetailedBlog = async (
 // @access Private
 const createNewBlog = [
   // Validate and sanitize title, description and content fields.
+  body('image', 'Blog image url must contain at least 5 characters')
+    .trim()
+    .isLength({ min: 5 })
+    .escape(),
   body('title', 'Blog title must contain at least 3 characters')
     .trim()
     .isLength({ min: 3 })
@@ -76,6 +80,7 @@ const createNewBlog = [
 
     // Create a blog object with escaped and trimmed data.
     const blog = new Blog({
+      image: req.body.image,
       title: req.body.title,
       description: req.body.description,
       content: req.body.content,
@@ -90,7 +95,7 @@ const createNewBlog = [
       // Save new blog.
       await blog.save();
       // New blog saved.
-      return res.status(201).json({ message: 'New blog created' });
+      return res.status(200).json({ message: 'New blog created' });
     }
   },
 ];
@@ -100,6 +105,10 @@ const createNewBlog = [
 // @access Private
 const updateBlog = [
   // Validate and sanitize title, description and content fields.
+  body('image', 'Blog image url must contain at least 5 characters')
+    .trim()
+    .isLength({ min: 5 })
+    .escape(),
   body('title', 'Blog title must contain at least 3 characters')
     .trim()
     .isLength({ min: 3 })
@@ -127,6 +136,7 @@ const updateBlog = [
 
     // Create a blog object with escaped and trimmed data (and the old id!)
     const blog = new Blog({
+      image: req.body.image,
       title: req.body.title,
       description: req.body.description,
       content: req.body.content,
@@ -161,6 +171,7 @@ const publishBlog = async (req: Request, res: Response) => {
 
   // Create a blog object with reversed published property (and the old id!)
   const blog = new Blog({
+    image: blogToPublish.image,
     title: blogToPublish.title,
     description: blogToPublish.description,
     content: blogToPublish.content,

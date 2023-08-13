@@ -21,6 +21,7 @@ import commentRoutes from './routes/commentRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
 const app: Express = express();
+app.set('trust proxy', 'loopback');
 
 // Set up rate limiter: maximum of twenty requests per minute
 import RateLimit from 'express-rate-limit';

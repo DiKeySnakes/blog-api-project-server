@@ -1,4 +1,5 @@
 import express from 'express';
+import loginLimiter from '../middleware/loginLimiter.js';
 import {
   sign_up,
   login,
@@ -16,7 +17,7 @@ router.post('/sign_up', sign_up);
 // @desc Login
 // @route POST /auth/login
 // @access Public
-router.post('/login', login);
+router.post('/login', loginLimiter, login);
 
 // @desc Refresh
 // @route GET /auth/refresh

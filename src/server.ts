@@ -27,6 +27,8 @@ import RateLimit from 'express-rate-limit';
 const limiter = RateLimit({
   windowMs: 1 * 10 * 1000, // 10 seconds
   max: 10,
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 // Apply rate limiter to all requests
 app.use(limiter);

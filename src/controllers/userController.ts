@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 
 // @desc Get all users
 // @route GET /user/users
-// @access Private
+// @access Private Admin
 const getAllUsers = async (req: Request, res: Response) => {
   // Get all users from MongoDB
   const users = await User.find().select('-password').lean();
@@ -18,7 +18,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 
 // @desc Update a user active state
 // @route PATCH /user/active/:id
-// @access Private
+// @access Private Admin
 const updateUserActive = async (req: Request, res: Response) => {
   // Confirm user exists to update
   const userToUpdate = await User.findById(req.params.id).exec();
@@ -43,13 +43,13 @@ const updateUserActive = async (req: Request, res: Response) => {
 
 // @desc Update a user roles array
 // @route PATCH /user/roles/:id
-// @access Private
+// @access Private Admin
 const updateUserRoles = async (req: Request, res: Response) => {
   const roles = req.body.roles;
 
   // Confirm data
   if (!Array.isArray(roles) || !roles.length) {
-    return res.status(400).json({ message: 'Add roles! User, admin or both' });
+    return res.status(400).json({ message: 'Add roles! User, Admin or both' });
   }
 
   // Confirm user exists to update

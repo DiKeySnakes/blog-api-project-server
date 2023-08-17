@@ -2,6 +2,7 @@ import express from 'express';
 import verifyJWT from '../middleware/verifyJWT.js';
 import isAdmin from '../middleware/isAdmin.js';
 import {
+  getBlogs,
   getAllBlogs,
   getDetailedBlog,
   createNewBlog,
@@ -10,6 +11,11 @@ import {
 } from '../controllers/blogController.js';
 
 const router = express.Router();
+
+// @desc Get all published and unpublished blogs
+// @route GET /blog/blogs
+// @access Private Admin
+router.get('/blogs', verifyJWT, isAdmin, getBlogs);
 
 // @desc Get all published blogs
 // @route GET /blog/blogs_all

@@ -17,8 +17,8 @@ const sign_up = [
       if (existingUsername) {
         throw new Error('This username is already in use');
       }
-    })
-    .escape(),
+    }),
+  // .escape(), // applies the HTML style entities to the values
   body('email')
     .trim()
     .isEmail()
@@ -27,8 +27,8 @@ const sign_up = [
       if (existingEmail) {
         throw new Error('This email is already in use');
       }
-    })
-    .escape(),
+    }),
+  // .escape(), // applies the HTML style entities to the values
   body(
     'password',
     'Password must contain at least 8 characters, at least 1 lowercase character, at least 1 uppercase character, at least 1 number and at least 1 symbol'
@@ -40,8 +40,8 @@ const sign_up = [
       minUppercase: 1,
       minNumbers: 1,
       minSymbols: 1,
-    })
-    .escape(),
+    }),
+  // .escape(), // applies the HTML style entities to the values
   body('confirmPassword', 'Passwords do not match!')
     .trim()
     .isStrongPassword({
@@ -53,8 +53,8 @@ const sign_up = [
     })
     .custom((value, { req }) => {
       return value === req.body.password;
-    })
-    .escape(),
+    }),
+  // .escape(), // applies the HTML style entities to the values
 
   // Process request after validation and sanitization.
   async (req: Request, res: Response) => {

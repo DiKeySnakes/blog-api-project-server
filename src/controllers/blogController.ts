@@ -3,6 +3,25 @@ import Comment from '../models/comment.js';
 import { Request, Response, NextFunction } from 'express';
 import { body, Result, validationResult } from 'express-validator';
 
+// @desc Get all published and unpublished blogs
+// @route GET /blog/blogs
+// @access Private Admin
+const getBlogs = async (req: Request, res: Response) => {
+  // Get all published and unpublished blogs from MongoDB
+  // excluding content fields and comments arrays
+  const blogs = await Blog.find()
+    .select('-content -comments')
+    .sort({ createdAt: -1 })
+    .exec();
+
+  // If no blogs
+  if (!blogs?.length) {
+    return res.status(400).json({ message: 'No blogs found' });
+  }
+
+  res.json(blogs);
+};
+
 // @desc Get all published blogs
 // @route GET /blog/blogs_all
 // @access Public
@@ -53,7 +72,8 @@ const createNewBlog = [
   body('image', 'Blog image url must contain at least 5 characters')
     .trim()
     .isLength({ min: 5 })
-    .escape(),
+    .isURL(),
+  // .escape(), // applies the HTML style entities to the values
   body('title', 'Blog title must contain at least 3 characters')
     .trim()
     .isLength({ min: 3 })
@@ -62,16 +82,16 @@ const createNewBlog = [
       if (existingTitle) {
         throw new Error('This title is already in use');
       }
-    })
-    .escape(),
+    }),
+  // .escape(), // applies the HTML style entities to the values
   body('description', 'Blog description must contain at least 5 characters')
     .trim()
-    .isLength({ min: 5 })
-    .escape(),
+    .isLength({ min: 5 }),
+  // .escape(), // applies the HTML style entities to the values
   body('content', 'Blog content must contain at least 5 characters')
     .trim()
-    .isLength({ min: 5 })
-    .escape(),
+    .isLength({ min: 5 }),
+  // .escape(), // applies the HTML style entities to the values
 
   // Process request after validation and sanitization.
   async (req: Request, res: Response) => {
@@ -102,25 +122,25 @@ const createNewBlog = [
 
 // @desc Update a blog
 // @route PATCH /blog/update/:id
-// @access Private
+// @access Private Admin
 const updateBlog = [
   // Validate and sanitize title, description and content fields.
   body('image', 'Blog image url must contain at least 5 characters')
     .trim()
-    .isLength({ min: 5 })
-    .escape(),
+    .isLength({ min: 5 }),
+  // .escape(), // applies the HTML style entities to the values
   body('title', 'Blog title must contain at least 3 characters')
     .trim()
-    .isLength({ min: 3 })
-    .escape(),
+    .isLength({ min: 3 }),
+  // .escape(), // applies the HTML style entities to the values
   body('description', 'Blog description must contain at least 5 characters')
     .trim()
-    .isLength({ min: 5 })
-    .escape(),
+    .isLength({ min: 5 }),
+  // .escape(), // applies the HTML style entities to the values
   body('content', 'Blog content must contain at least 5 characters')
     .trim()
-    .isLength({ min: 5 })
-    .escape(),
+    .isLength({ min: 5 }),
+  // .escape(), // applies the HTML style entities to the values
 
   // Process request after validation and sanitization.
   async (req: Request, res: Response) => {
@@ -160,7 +180,7 @@ const updateBlog = [
 
 // @desc Publish a blog
 // @route PATCH /blog/publish/:id
-// @access Private
+// @access Private Admin
 const publishBlog = async (req: Request, res: Response) => {
   // Confirm blog exists to publish
   const blogToPublish = await Blog.findById(req.params.id).exec();
@@ -184,4 +204,11 @@ const publishBlog = async (req: Request, res: Response) => {
   return res.json({ message: `Publish property of ${blog.title} updated` });
 };
 
-export { getAllBlogs, getDetailedBlog, createNewBlog, updateBlog, publishBlog };
+export {
+  getBlogs,
+  getAllBlogs,
+  getDetailedBlog,
+  createNewBlog,
+  updateBlog,
+  publishBlog,
+};

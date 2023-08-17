@@ -11,8 +11,8 @@ const createNewComment = [
   // Validate and sanitize content field.
   body('content', 'Comment must contain at least 3 characters')
     .trim()
-    .isLength({ min: 3 })
-    .escape(),
+    .isLength({ min: 3 }),
+  // .escape(), // applies the HTML style entities to the values
 
   // Process request after validation and sanitization.
   async (req: Request, res: Response) => {
